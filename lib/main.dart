@@ -5,17 +5,33 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:girigoflutter/recording_controller.dart';
 import 'package:girigoflutter/recording_screen.dart';
+import 'package:provider/provider.dart';
 
 late List<CameraDescription> _cameras;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
+  SystemChrome.setEnabledSystemUIMode(
+    SystemUiMode.edgeToEdge,
+  );
+
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarContrastEnforced: false,
+    ),
+  );
 
   _cameras = await availableCameras();
 
-  runApp(const App());
+  runApp(
+      ChangeNotifierProvider<RecordingController>(
+        create: (_) => RecordingController(),
+        builder: (context, child){
+          return const App();
+        },),
+      );
 }
 
 class App extends StatelessWidget {
@@ -28,7 +44,9 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       debugShowMaterialGrid: false,
-      home: const HomePage(),
+      home:HomePage(),
+
+
     );
   }
 }
@@ -85,7 +103,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   @override
   void dispose() {
     // TODO: implement dispose
+    _fadeAnimation.dispose();
     _fadeAnimationController.dispose();
+    super.dispose();
+
   }
 
   @override
@@ -129,7 +150,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
 
               GestureDetector(
                 onTap: () {
-                  Navigator.of(context).push(
+                  Navigator.of(context).pushReplacement(
+
+
                     PageRouteBuilder(
                       pageBuilder: (context, animation, secondaryAnimation) =>
                           RecordingScreen(cameraController: _cameraController),
