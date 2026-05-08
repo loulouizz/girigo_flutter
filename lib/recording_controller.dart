@@ -16,7 +16,6 @@ class RecordingController extends ChangeNotifier{
 
 
   void startRecording(){
-    print('startRecoding');
     _isRecording = true;
 
     // this line is needed or the timer only starts counting 1s later
@@ -25,10 +24,8 @@ class RecordingController extends ChangeNotifier{
 
     _timer = Timer.periodic(Duration(seconds: 1), (timer){
       if(timer.tick <= _recordingTimeLimit){
-        print('teste');
         _lastValue = _currentValue;
         _currentValue = (timer.tick + 1)/ _recordingTimeLimit;
-        print('progress ratio: $_currentValue');
         notifyListeners();
       } else {
         stopRecording();

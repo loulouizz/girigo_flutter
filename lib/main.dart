@@ -1,10 +1,10 @@
-import 'dart:ui';
-
+import 'package:audioplayers/audioplayers.dart';
 import 'package:blur/blur.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:girigoflutter/audioplayer_singleton.dart';
 import 'package:girigoflutter/recording_controller.dart';
 import 'package:girigoflutter/recording_screen.dart';
 import 'package:provider/provider.dart';
@@ -13,25 +13,27 @@ late List<CameraDescription> _cameras;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIMode(
-    SystemUiMode.edgeToEdge,
-  );
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
   SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      systemNavigationBarContrastEnforced: false,
-    ),
+    const SystemUiOverlayStyle(systemNavigationBarContrastEnforced: false),
   );
 
   _cameras = await availableCameras();
 
+  var player = AudioplayerSingleton.instance.player;
+  await player.setSource((AssetSource('girigo.wav')));
+  await player.setReleaseMode(ReleaseMode.loop);
+  await player.resume();
+
   runApp(
-      ChangeNotifierProvider<RecordingController>(
-        create: (_) => RecordingController(),
-        builder: (context, child){
-          return const App();
-        },),
-      );
+    ChangeNotifierProvider<RecordingController>(
+      create: (_) => RecordingController(),
+      builder: (context, child) {
+        return const App();
+      },
+    ),
+  );
 }
 
 class App extends StatelessWidget {
@@ -44,9 +46,7 @@ class App extends StatelessWidget {
       themeMode: ThemeMode.dark,
       debugShowCheckedModeBanner: false,
       debugShowMaterialGrid: false,
-      home:HomePage(),
-
-
+      home: HomePage(),
     );
   }
 }
@@ -106,12 +106,10 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     _fadeAnimation.dispose();
     _fadeAnimationController.dispose();
     super.dispose();
-
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
 
     if (!_cameraController.value.isInitialized) {
       return Container();
@@ -149,25 +147,27 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               Image.asset('assets/front.gif', height: 400, fit: BoxFit.cover),
 
               GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pushReplacement(
-
-
-                    PageRouteBuilder(
-                      pageBuilder: (context, animation, secondaryAnimation) =>
-                          RecordingScreen(cameraController: _cameraController),
-                      transitionsBuilder:
-                          (context, animation, secondaryAnimation, child) {
-                            return FadeTransition(
-                              opacity: animation,
-                              child: child,
-                            );
-                          },
-                      transitionDuration: const Duration(
-                        milliseconds: 300,
-                      ), // Optional: customize speed
-                    ),
-                  );
+                onTap: () async {
+                  var player = AudioplayerSingleton.instance.player;
+                  await player.stop();
+                  if(mounted){
+                    Navigator.of(context).pushReplacement(
+                      PageRouteBuilder(
+                        pageBuilder: (context, animation, secondaryAnimation) =>
+                            RecordingScreen(cameraController: _cameraController),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          return FadeTransition(
+                            opacity: animation,
+                            child: child,
+                          );
+                        },
+                        transitionDuration: const Duration(
+                          milliseconds: 300,
+                        ), // Optional: customize speed
+                      ),
+                    );
+                  }
                 },
                 child: FadeTransition(
                   opacity: _fadeAnimation,
@@ -177,10 +177,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                   ),
                 ),
               ),
-              /*
-            * SvgPicture.asset('assets/front_logo.svg'),
-            Image.asset('assets/front.gif'),
-            SvgPicture.asset('assets/front_button.svg'),*/
             ],
           ),
         ),
