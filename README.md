@@ -1,16 +1,3 @@
-# girigoflutter
-
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+# girigo_flutter
+An app inspired on the Netflix's serie &lt;If Wishes Could Kill - 기리고>
+>>>>>>> 4a18002f1d0866d5d5b4f5dfcf107e811b2f817c
