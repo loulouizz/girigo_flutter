@@ -15,3 +15,10 @@ I also missed coding without relying on AI, so I decided to not use it during th
 ## Final Result
 
 https://github.com/user-attachments/assets/e433d707-085b-4347-8064-1722c3fc094c
+
+## Download
+If you'd like to test it on your own device, go to "tags" and download the .apk file of the latest version
+
+<img width="916" height="434" alt="image" src="https://github.com/user-attachments/assets/edad618a-d9a3-4951-8644-4ab63d1ea6fe" />
+<br/>
+<img width="1236" height="449" alt="image" src="https://github.com/user-attachments/assets/8deb5f51-7e5b-4962-8d8a-d52cea338420" />
